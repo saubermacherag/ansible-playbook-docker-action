@@ -1,0 +1,38 @@
+# action.yml
+name: 'Ansible Playbook'
+author: 'Patrick Pötz'
+description: 'Executes an Ansible Playbook as Github Action'
+inputs:
+  playbookName:
+    description: 'Name of the playbook in your workspace.'
+    required: true
+  inventoryFile:
+    description: 'Name of the inventory file to use.'
+    required: false
+  requirementsFile:
+    description: 'name of the requirements file to use.'
+    required: false
+  rolesPath:
+    description: 'If inventoryFile is set you can also specify a custom roles path to install your required roles in.'
+    required: false
+  keyFile:
+    description: 'Keyfile to use for host connections.'
+    required: false
+  extraFile:
+    description: 'File containing extra vars.'
+    required: false
+  verbosity:
+    description: 'Choose one of 4 verbosity levels. See Ansible documentation for details.'
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.playbookName }}
+    - ${{ inputs.inventoryFile }}
+    - ${{ inputs.requirementsFile }}
+    - ${{ inputs.keyFile }}
+    - ${{ inputs.verbosity }}
+branding:
+  icon: 'cloud-lightning'
+  color: 'purple'
