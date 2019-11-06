@@ -1,5 +1,5 @@
 # ansible-playbook-docker-action
-![](https://github.com/saubermacherag/ansible-playbook-docker-action/workflows/Ansible%20Playbook/badge.svg)
+[![Actions Status](https://github.com/saubermacherag/ansible-playbook-docker-action/workflows/Ansible%20Playbook/badge.svg)](https://github.com/saubermacherag/ansible-playbook-docker-action/actions)
 
 Github Action to execute Ansible Playbooks
 
