@@ -35,6 +35,6 @@ with:
   rolesPath: ".ansible/playbooks/roles"
   keyFile: ".ansible/random-ssh-key.pem"
   extraFile: ".ansible/extra.yml"
-  extraVars: "my_first_extra=${{ GITHUB_WORKSPACE }} my_second_one=${{ GITHUB_SHA }}"
+  extraVars: "-e my_first_extra=${{ github.actor }} -e my_second_one=${{ github.sha }}"
   verbosity: "vv"
 ``` 
