@@ -8,3 +8,8 @@
   tasks:
     - debug:
         msg: "{{ extra_debug_message }}"
+
+- hosts: testhost
+  tasks:
+    - debug:
+        msg: "Printing extraVars... '{{ my_first_extra }}' and '{{ my_second_one }}'"

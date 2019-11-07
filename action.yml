@@ -18,6 +18,9 @@ inputs:
   keyFile:
     description: 'Keyfile to use for host connections.'
     required: false
+  extraVars:
+    description: 'String containing all extraVars which you want to be injected into the run.'
+    required: false
   extraFile:
     description: 'File containing extra vars.'
     required: false
@@ -32,6 +35,8 @@ runs:
     - ${{ inputs.inventoryFile }}
     - ${{ inputs.requirementsFile }}
     - ${{ inputs.keyFile }}
+    - ${{ inputs.extraVars }}
+    - ${{ inputs.extraFile }}
     - ${{ inputs.verbosity }}
 branding:
   icon: 'cloud-lightning'

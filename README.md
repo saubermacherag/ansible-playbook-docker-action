@@ -19,6 +19,9 @@ It simply adds `--roles-path <rolesPath>` to the galaxy command.
 **Optional** ssh keyfile to use for connection to hosts
 ### `extraFile`
 **Optional** File with extra vars to inject in the playbook run.
+### `extraVars`
+**Optional** A String containing extra variables separated by spaces to inject in the playbook run. 
+Especially useful when you want to inject environment variables. In such a case `extraFile` doesn't suffice.
 ### `verbosity`
 Choose out of 4 verbosity log levels. See ansible documentation for details.
 
@@ -32,5 +35,6 @@ with:
   rolesPath: ".ansible/playbooks/roles"
   keyFile: ".ansible/random-ssh-key.pem"
   extraFile: ".ansible/extra.yml"
+  extraVars: "my_first_extra=${{ GITHUB_WORKSPACE }} my_second_one=${{ GITHUB_SHA }}"
   verbosity: "vv"
 ``` 

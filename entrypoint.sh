@@ -57,10 +57,16 @@ if [ -z "$INPUT_EXTRAFILE" ]
 then
   echo "\$INPUT_EXTRAFILE not set. Won't inject any extra vars file."
 else
-  echo "\$INPUT_EXTRAFILE is set. Will inject $INPUT_EXTRAFILE as extra vars file."
+  echo "\$INPUT_EXTRAFILE is set. Will inject ${INPUT_EXTRAFILE} as extra vars file."
   export EXTRAFILE="--extra-vars @${INPUT_EXTRAFILE}"
 fi
 
+echo "${GITHUB_SHA}"
+echo "${GITHUB_WORKFLOW}"
+echo "${EXTRAVARS}"
+
+eval echo "${EXTRAVARS}"
+
 echo "going to execute: "
-echo "ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${KEYFILE} ${EXTRAFILE} ${VERBOSITY}"
- ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${KEYFILE} ${EXTRAFILE} ${VERBOSITY}
+echo ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
+ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
