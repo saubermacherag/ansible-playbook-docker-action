@@ -1,5 +1,5 @@
 # action.yml
-name: 'ansible-playbook'
+name: 'Execute Ansible Playbook'
 author: 'Patrick Pötz'
 description: 'Executes an Ansible Playbook as Github Action'
 inputs:
