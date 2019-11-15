@@ -12,6 +12,12 @@ inputs:
   requirementsFile:
     description: 'name of the requirements file to use.'
     required: false
+  galaxyGithubUser:
+    description: 'If you use private github repositories in your requirements file you need to set galaxyGithubUser and galaxyGithub token.'
+    required: false
+  galaxyGithubToken:
+    description: 'Token to access git source of roles to download. Only needed for private git sources. Github Account needs to be linked to Ansible Galaxy.'
+    required: false
   rolesPath:
     description: 'If inventoryFile is set you can also specify a custom roles path to install your required roles in.'
     required: false
@@ -34,6 +40,8 @@ runs:
     - ${{ inputs.playbookName }}
     - ${{ inputs.inventoryFile }}
     - ${{ inputs.requirementsFile }}
+    - ${{ inputs.galaxyGithubUser }}
+    - ${{ inputs.galaxyGithubToken }}
     - ${{ inputs.keyFile }}
     - ${{ inputs.extraVars }}
     - ${{ inputs.extraFile }}

@@ -11,16 +11,20 @@ Github Action to execute Ansible Playbooks
 ### `requirementsFile`
 **Optional** The name of the requirements file, if you want to install external roles.
 This will trigger `ansible-galaxy install -r <requirementsFile>` before your playbook will be called.
+### `galaxyGithubUser`
+**Optional** If you use private github repositories in your requirements file you need to set galaxyGithubUser and galaxyGithub token.
+### `galaxyGithubToken`
+**Optional** Token to access git source of roles to download. Only needed for private git sources. Github Account needs to be linked to Ansible Galaxy.
 ### `rolesPath`
 **Optional** Additionally to `requirementsFile` above you can specify a custom roles path for your
 roles to be installed in. This variable is useless without `requirementsFile`. 
 It simply adds `--roles-path <rolesPath>` to the galaxy command.
 ### `keyFile`
 **Optional** ssh keyfile to use for connection to hosts
+### `extraVars`
+**Optional** A String containing extra variables separated by spaces to inject in the playbook run.
 ### `extraFile`
 **Optional** File with extra vars to inject in the playbook run.
-### `extraVars`
-**Optional** A String containing extra variables separated by spaces to inject in the playbook run. 
 Especially useful when you want to inject environment variables. In such a case `extraFile` doesn't suffice.
 ### `verbosity`
 Choose out of 4 verbosity log levels. See ansible documentation for details.
@@ -32,6 +36,8 @@ with:
   playbookName: 'simple-playbook.yml'
   inventoryFile: 'my-inventory.yml'
   requirementsFile: ".ansible/requirements.yml"
+  galaxyGithubUser: ${{ secrets.GITHUB_USER }}
+  galaxyGithubToken: ${{ secrets.Github_PAT }}
   rolesPath: ".ansible/playbooks/roles"
   keyFile: ".ansible/random-ssh-key.pem"
   extraFile: ".ansible/extra.yml"

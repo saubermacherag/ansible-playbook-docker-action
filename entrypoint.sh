@@ -1,13 +1,22 @@
 #!/bin/sh
 
+set -e
+
 # Evaluate keyfile
 export KEYFILE=
-if [ -z "$INPUT_KEYFILE" ]
+if [ ! -z "$INPUT_KEYFILE" ]
 then
-  echo "\$INPUT_KEYFILE not set. You'll most probably only be able to work on localhost."
+  if [ ! -f "$INPUT_KEYFILE" ]
+  then
+    echo "\$INPUT_KEYFILE is set. It's no file but directly entered ssh key. Will write to file and use for host connections."
+    export KEYFILE=$(dirname "${INPUT_PLAYBOOKNAME}")/ssh_key
+    echo $INPUT_KEYFILE | tr " " "\n" > $(dirname "${INPUT_PLAYBOOKNAME}")/ssh_key
+  else
+    echo "\$INPUT_KEYFILE is set. Will use ssh keyfile for host connections."
+    export KEYFILE="--key-file \"${INPUT_KEYFILE}\""
+  fi
 else
-  echo "\$INPUT_KEYFILE is set. Will use $INPUT_KEYFILE as ssh keyfile for host connections."
-  export KEYFILE="--key-file ${INPUT_KEYFILE}"
+  echo "\$INPUT_KEYFILE not set. You'll most probably only be able to work on localhost."
 fi
 
 # Evaluate verbosity
@@ -36,6 +45,7 @@ if [ -z "$INPUT_REQUIREMENTSFILE" ]
 then
   echo "\$INPUT_REQUIREMENTSFILE not set. Won't install any additional external roles."
 else
+  REQUIREMENTS=$INPUT_REQUIREMENTSFILE
   export ROLES_PATH=
   if [ -z "$INPUT_ROLESPATH" ]
   then
@@ -43,11 +53,27 @@ else
   else
     echo "\$INPUT_ROLESPATH is set. Will install roles to ${INPUT_ROLESPATH}."
     export ROLES_PATH=$INPUT_ROLESPATH
-  fi 
+  fi
   echo "\$INPUT_REQUIREMENTSFILE is set. Will use ${INPUT_REQUIREMENTSFILE} to install external roles."
+
+  if [ ! -z "$INPUT_GALAXYGITHUBTOKEN" ]
+  then
+    if [ ! -z "$INPUT_GALAXYGITHUBUSER" ]
+    then
+      echo "\$INPUT_GALAXYGITHUBTOKEN and \$INPUT_GALAXYGITHUBUSER are set. Will substitue \$GALAXYGITHUBUSER and \$GALAXYGITHUBTOKEN in \$REQUIREMENTSFILE."
+      envsubst < ${INPUT_REQUIREMENTSFILE} > $(dirname "${INPUT_REQUIREMENTSFILE}")/substituted_requirements.yml
+      export REQUIREMENTS=$(dirname "${INPUT_REQUIREMENTSFILE}")/substituted_requirements.yml
+    else
+      echo "\$INPUT_GALAXYTOKEN is set. Will login to Ansible Galaxy."
+      ansible-galaxy login --github-token ${INPUT_GALAXYGITHUBTOKEN} ${VERBOSITY}
+    fi
+  else
+    echo "\$INPUT_GALAXYGITHUBTOKEN not set. Won't do any authentication for roles installation."
+  fi
+
   ansible-galaxy install --force \
     --roles-path ${ROLES_PATH} \
-    -r ${INPUT_REQUIREMENTSFILE} \
+    -r ${REQUIREMENTS} \
     ${VERBOSITY}
 fi
 
@@ -60,12 +86,6 @@ else
   echo "\$INPUT_EXTRAFILE is set. Will inject ${INPUT_EXTRAFILE} as extra vars file."
   export EXTRAFILE="--extra-vars @${INPUT_EXTRAFILE}"
 fi
-
-echo "${GITHUB_SHA}"
-echo "${GITHUB_WORKFLOW}"
-echo "${EXTRAVARS}"
-
-eval echo "${EXTRAVARS}"
 
 echo "going to execute: "
 echo ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
