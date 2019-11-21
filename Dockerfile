@@ -1,4 +1,4 @@
-FROM saubermacherag/docker-ansible-alpine/ansible-alpine:2.8.5-3.10.3
+FROM pinkrobin/docker-ansible-alpine:2.8.5-3.10.3
 
 MAINTAINER Patrick Pötz <devops@wastebox.biz>
 
