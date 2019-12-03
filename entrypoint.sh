@@ -7,11 +7,11 @@ export KEYFILE=
 if [ ! -z "$INPUT_KEYFILE" ]
 then
   echo "\$INPUT_KEYFILE is set. Will use ssh keyfile for host connections."
-  if [ ! -z "$INPUT_KEYFILE_VAULT_PASS" ]
+  if [ ! -z "$INPUT_KEYFILEVAULTPASS" ]
   then
     echo "Using \$INPUT_KEYFILE_VAULT_PASS to decrypt keyfile."
     mkdir -p ~/.ssh
-    echo "${INPUT_KEYFILE_VAULT_PASS}" > ~/.ssh/vault_key
+    echo "${INPUT_KEYFILEVAULTPASS}" > ~/.ssh/vault_key
     ansible-vault decrypt ${INPUT_KEYFILE} --vault-password-file ~/.ssh/vault_key
   fi
   export KEYFILE="--key-file \"${INPUT_KEYFILE}\""
