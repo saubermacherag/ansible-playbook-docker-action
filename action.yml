@@ -24,6 +24,9 @@ inputs:
   keyFile:
     description: 'Keyfile to use for host connections.'
     required: false
+  keyFileVaultPass:
+    description: 'Vault Password to decrypt keyFile.'
+    required: false
   extraVars:
     description: 'String containing all extraVars which you want to be injected into the run.'
     required: false

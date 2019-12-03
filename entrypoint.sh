@@ -6,15 +6,15 @@ set -e
 export KEYFILE=
 if [ ! -z "$INPUT_KEYFILE" ]
 then
-  if [ ! -f "$INPUT_KEYFILE" ]
+  echo "\$INPUT_KEYFILE is set. Will use ssh keyfile for host connections."
+  if [ ! -z "$INPUT_KEYFILE_VAULT_PASS" ]
   then
-    echo "\$INPUT_KEYFILE is set. It's no file but directly entered ssh key. Will write to file and use for host connections."
-    export KEYFILE=$(dirname "${INPUT_PLAYBOOKNAME}")/ssh_key
-    echo $INPUT_KEYFILE | tr " " "\n" > $(dirname "${INPUT_PLAYBOOKNAME}")/ssh_key
-  else
-    echo "\$INPUT_KEYFILE is set. Will use ssh keyfile for host connections."
-    export KEYFILE="--key-file \"${INPUT_KEYFILE}\""
+    echo "Using \$INPUT_KEYFILE_VAULT_PASS to decrypt keyfile."
+    mkdir -p ~/.ssh
+    echo "${INPUT_KEYFILE_VAULT_PASS}" > ~/.ssh/vault_key
+    ansible-vault decrypt ${INPUT_KEYFILE} --vault-password-file ~/.ssh/vault_key
   fi
+  export KEYFILE="--key-file \"${INPUT_KEYFILE}\""
 else
   echo "\$INPUT_KEYFILE not set. You'll most probably only be able to work on localhost."
 fi
