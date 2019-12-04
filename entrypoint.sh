@@ -14,7 +14,7 @@ then
     echo "${INPUT_KEYFILEVAULTPASS}" > ~/.ssh/vault_key
     ansible-vault decrypt ${INPUT_KEYFILE} --vault-password-file ~/.ssh/vault_key
   fi
-  export KEYFILE="--key-file \"${INPUT_KEYFILE}\""
+  export KEYFILE="--key-file ${INPUT_KEYFILE}"
 else
   echo "\$INPUT_KEYFILE not set. You'll most probably only be able to work on localhost."
 fi
