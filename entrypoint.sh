@@ -2,6 +2,19 @@
 
 set -e
 
+# Evaluate vaultfile
+export VAULTFILE=
+if [ ! -z "$INPUT_KEYFILEVAULTPASS" ]
+then
+  echo "Using \$INPUT_KEYFILE_VAULT_PASS to decrypt keyfile."
+  mkdir -p ~/.ssh
+  echo "${INPUT_KEYFILEVAULTPASS}" > ~/.ssh/vault_key
+  export VAULTFILE="--vault-password-file ~/.ssh/vault_key"
+  echo "\$INPUT_KEYFILEVAULTPASS is set. Will use value for vault."
+else
+  echo "\$INPUT_KEYFILEVAULTPASS not set. No vault set."
+fi
+
 # Evaluate keyfile
 export KEYFILE=
 if [ ! -z "$INPUT_KEYFILE" ]
@@ -12,7 +25,7 @@ then
     echo "Using \$INPUT_KEYFILE_VAULT_PASS to decrypt keyfile."
     mkdir -p ~/.ssh
     echo "${INPUT_KEYFILEVAULTPASS}" > ~/.ssh/vault_key
-    ansible-vault decrypt ${INPUT_KEYFILE} --vault-password-file ~/.ssh/vault_key
+    ansible-vault decrypt ${INPUT_KEYFILE} ${VAULTFILE}
   fi
   export KEYFILE="--key-file ${INPUT_KEYFILE}"
 else
@@ -60,6 +73,8 @@ else
   then
     if [ ! -z "$INPUT_GALAXYGITHUBUSER" ]
     then
+      export GALAXYGITHUBUSER=$INPUT_GALAXYGITHUBUSER
+      export GALAXYGITHUBTOKEN=$INPUT_GALAXYGITHUBTOKEN
       echo "\$INPUT_GALAXYGITHUBTOKEN and \$INPUT_GALAXYGITHUBUSER are set. Will substitue \$GALAXYGITHUBUSER and \$GALAXYGITHUBTOKEN in \$REQUIREMENTSFILE."
       envsubst < ${INPUT_REQUIREMENTSFILE} > $(dirname "${INPUT_REQUIREMENTSFILE}")/substituted_requirements.yml
       export REQUIREMENTS=$(dirname "${INPUT_REQUIREMENTSFILE}")/substituted_requirements.yml
@@ -88,5 +103,11 @@ else
 fi
 
 echo "going to execute: "
-echo ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
-ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
+if [-z "$INPUT_KEYFILEVAULTPASS"]
+then
+  echo ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
+  ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY}
+else
+  echo ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY} ${VAULTFILE}
+  ansible-playbook ${INPUT_PLAYBOOKNAME} ${INVENTORY} ${EXTRAFILE} ${INPUT_EXTRAVARS} ${KEYFILE} ${VERBOSITY} ${VAILTFILE}
+fi
