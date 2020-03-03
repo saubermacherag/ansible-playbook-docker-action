@@ -22,7 +22,6 @@ then
   if [ ! -z "$KEYFILEVAULTPASS" ]
   then
     echo "Using \$INPUT_KEYFILE_VAULT_PASS to decrypt keyfile."
-    mkdir -p ~/.ssh
     ansible-vault decrypt ${INPUT_KEYFILE} ${KEYFILEVAULTPASS}
   fi
   export KEYFILE="--key-file ${INPUT_KEYFILE}"
