@@ -33,7 +33,7 @@ Choose out of 4 verbosity log levels. See ansible documentation for details.
 
 ## Example Usage
 ```yaml
-uses: actions/ansible-playbook-docker-action@v1.3
+uses: saubermacherag/ansible-playbook-docker-action@v1.3
 with:
   playbookName: 'simple-playbook.yml'
   inventoryFile: 'my-inventory.yml'
