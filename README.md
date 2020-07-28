@@ -3,6 +3,11 @@
 
 Github Action to execute Ansible Playbooks using fixed Ansible versions.
 
+| Action Version | Ansible Version |
+|:--------------:|:---------------:|
+|      v1.2      |      2.8.5      |
+|      v1.3      |      2.9.11     |
+
 ## Inputs
 ### `playbookName`
 **Required** The name of the playbook to execute.
